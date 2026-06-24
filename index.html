@@ -7,1211 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #fafafa;
-  --bg-elevated: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.7);
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --accent: #6366f1;
-  --accent-2: #06b6d4;
-  --accent-glow: rgba(99, 102, 241, 0.4);
-  --gradient: linear-gradient(135deg, #6366f1 0%, #06b6d4 50%, #8b5cf6 100%);
-  --gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.1));
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-  --shadow: 0 4px 20px rgba(0,0,0,0.06);
-  --shadow-lg: 0 20px 50px rgba(0,0,0,0.1);
-  --radius: 16px;
-  --radius-sm: 10px;
-}
-
-[data-theme="dark"] {
-  --bg: #0a0a14;
-  --bg-elevated: #14141f;
-  --bg-glass: rgba(20, 20, 31, 0.7);
-  --text: #f1f5f9;
-  --text-muted: #94a3b8;
-  --border: rgba(255, 255, 255, 0.08);
-  --accent: #818cf8;
-  --accent-2: #22d3ee;
-  --accent-glow: rgba(129, 140, 248, 0.4);
-  --gradient: linear-gradient(135deg, #818cf8 0%, #22d3ee 50%, #a78bfa 100%);
-  --gradient-soft: linear-gradient(135deg, rgba(129, 140, 248, 0.15), rgba(34, 211, 238, 0.15));
-  --shadow: 0 4px 20px rgba(0,0,0,0.3);
-  --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
-}
-
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  font-family: 'Inter', system-ui, sans-serif;
-  color: var(--text);
-  line-height: 1.6;
-  overflow-x: hidden;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-/* Animated background mesh */
-body::before {
-  content: '';
-  position: fixed;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background:
-    radial-gradient(circle at 20% 30%, var(--accent-glow) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.3) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
-  z-index: -1;
-  opacity: 0.5;
-  animation: meshMove 20s ease-in-out infinite;
-}
-@keyframes meshMove {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(-5%, -5%) rotate(180deg); }
-}
-
-/* Scroll progress bar */
-.scroll-progress {
-  position: fixed;
-  top: 0; left: 0;
-  height: 3px;
-  background: var(--gradient);
-  z-index: 1000;
-  width: 0%;
-  transition: width 0.1s ease;
-  box-shadow: 0 0 10px var(--accent-glow);
-}
-
-/* Top bar with logo + theme toggle */
-.top-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-}
-
-.top-bar-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.logo-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--gradient);
-  box-shadow: 0 0 15px var(--accent-glow);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.7; }
-}
-
-.theme-toggle {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  transition: all 0.3s ease;
-}
-.theme-toggle:hover {
-  transform: rotate(20deg) scale(1.1);
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-/* Mobile menu button */
-.menu-toggle {
-  display: none;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* Navigation */
-.nav-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  margin: 20px auto;
-  max-width: fit-content;
-  box-shadow: var(--shadow);
-}
-
-.nav-bar button {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  border-radius: 100px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-.nav-bar button:hover {
-  color: var(--text);
-  background: var(--gradient-soft);
-}
-.nav-bar button.active {
-  color: white;
-  background: var(--gradient);
-  box-shadow: 0 4px 15px var(--accent-glow);
-}
-
-/* Pages */
-.page {
-  display: none;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 30px 24px 60px;
-  animation: pageIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.page.active { display: block; }
-@keyframes pageIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: none; }
-}
-
-/* Hero */
-.hero {
-  position: relative;
-  background: var(--gradient);
-  color: white;
-  border-radius: 24px;
-  padding: 80px 40px;
-  margin-bottom: 48px;
-  text-align: center;
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.2) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15) 0%, transparent 50%);
-}
-.hero h1 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(32px, 5vw, 52px);
-  font-weight: 700;
-  margin-bottom: 16px;
-  position: relative;
-  letter-spacing: -0.02em;
-}
-.hero p {
-  font-size: clamp(15px, 2vw, 19px);
-  max-width: 650px;
-  margin: 0 auto 28px;
-  opacity: 0.95;
-  position: relative;
-}
-.hero-cta {
-  display: inline-flex;
-  gap: 12px;
-  position: relative;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.btn-hero {
-  background: white;
-  color: var(--accent);
-  padding: 14px 28px;
-  border-radius: 100px;
-  border: none;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.3s;
-}
-.btn-hero:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.btn-hero-outline {
-  background: transparent;
-  color: white;
-  border: 2px solid rgba(255,255,255,0.4);
-}
-.btn-hero-outline:hover { background: rgba(255,255,255,0.1); }
-
-/* Section title */
-.section-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text);
-  margin: 40px 0 24px;
-  letter-spacing: -0.01em;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.section-title::before {
-  content: '';
-  width: 4px;
-  height: 28px;
-  background: var(--gradient);
-  border-radius: 4px;
-}
-
-/* Grid */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
-}
-
-/* Cards */
-.card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 3px;
-  background: var(--gradient);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
-}
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-lg);
-  border-color: transparent;
-}
-.card:hover::before { transform: scaleX(1); }
-.card h3 {
-  font-family: 'Space Grotesk', sans-serif;
-  color: var(--text);
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: 600;
-}
-.card p { color: var(--text-muted); font-size: 14px; }
-
-/* Stats */
-.stat-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 32px 24px;
-  text-align: center;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::after {
-  content: '';
-  position: absolute;
-  bottom: -50%; right: -50%;
-  width: 200%; height: 200%;
-  background: var(--gradient-soft);
-  border-radius: 50%;
-  transition: transform 0.5s;
-  z-index: 0;
-}
-.stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.stat-card:hover::after { transform: scale(1.2); }
-.stat-card .number {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 48px;
-  font-weight: 800;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
-  z-index: 1;
-}
-.stat-card .label {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 6px;
-  position: relative;
-  z-index: 1;
-  font-weight: 500;
-}
-
-/* Reveal on scroll */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.reveal.visible { opacity: 1; transform: none; }
-
-/* Search bar */
-.search-wrap {
-  position: relative;
-  margin-bottom: 24px;
-}
-.search-input {
-  width: 100%;
-  padding: 14px 20px 14px 48px;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 14px;
-  background: var(--bg-elevated);
-  color: var(--text);
-  font-family: inherit;
-  transition: all 0.3s;
-}
-.search-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-glow);
-}
-.search-icon {
-  position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-/* Filter chips */
-.filter-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-.chip {
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  background: var(--bg-elevated);
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.25s;
-  font-family: inherit;
-}
-.chip:hover { color: var(--text); }
-.chip.active {
-  background: var(--gradient);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 12px var(--accent-glow);
-}
-
-/* Blog post */
-.blog-post {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 16px;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.blog-post:hover {
-  transform: translateX(8px);
-  box-shadow: var(--shadow-lg);
-  border-left: 4px solid var(--accent);
-}
-.blog-post .meta {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.blog-post .meta::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.blog-post h3 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 20px;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-.blog-post p { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
-.tag {
-  display: inline-block;
-  background: var(--gradient-soft);
-  color: var(--accent);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 100px;
-  margin-right: 6px;
-  margin-top: 4px;
-}
-
-/* Table */
-.table-wrap {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 32px;
-  box-shadow: var(--shadow-sm);
-}
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th {
-  text-align: left;
-  color: var(--text);
-  font-weight: 600;
-  padding: 16px 20px;
-  background: var(--gradient-soft);
-  cursor: pointer;
-  user-select: none;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: background 0.2s;
-}
-th:hover { background: var(--gradient); color: white; }
-th.sorted::after { content: ' ↓'; }
-th.sorted-asc::after { content: ' ↑'; }
-td {
-  padding: 16px 20px;
-  color: var(--text);
-  border-top: 1px solid var(--border);
-}
-tbody tr { transition: background 0.2s; }
-tbody tr:hover td { background: var(--gradient-soft); }
-
-/* Events */
-.event-item {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 14px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  transition: all 0.3s;
-}
-.event-item:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--accent);
-}
-.event-date {
-  background: var(--gradient);
-  color: #fff;
-  border-radius: 14px;
-  padding: 14px 18px;
-  text-align: center;
-  min-width: 80px;
-  box-shadow: 0 6px 20px var(--accent-glow);
-}
-.event-date .day {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  line-height: 1;
-}
-.event-date .month {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 4px;
-  opacity: 0.95;
-}
-.event-info { flex: 1; }
-.event-info h4 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.event-info p { font-size: 13px; color: var(--text-muted); }
-.event-btn {
-  background: var(--gradient-soft);
-  color: var(--accent);
-  border: none;
-  padding: 10px 18px;
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-.event-btn:hover { background: var(--gradient); color: white; }
-
-/* Form */
-.form-group { margin-bottom: 18px; }
-.form-group label {
-  display: block;
-  font-size: 13px;
-  color: var(--text);
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-.form-group input, .form-group textarea, .form-group select {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-family: inherit;
-  background: var(--bg-elevated);
-  color: var(--text);
-  transition: all 0.25s;
-}
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-glow);
-}
-.form-group textarea { min-height: 130px; resize: vertical; }
-.btn {
-  background: var(--gradient);
-  color: #fff;
-  border: none;
-  padding: 14px 32px;
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-family: inherit;
-  box-shadow: 0 6px 20px var(--accent-glow);
-}
-.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--accent-glow); }
-.btn:active { transform: translateY(0); }
-
-/* Media gallery */
-.media-item {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.media-item:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: var(--shadow-lg);
-}
-.media-thumb {
-  background: var(--gradient);
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-.media-thumb::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.media-item:hover .media-thumb::before { opacity: 1; }
-.media-thumb svg { width: 56px; height: 56px; fill: white; position: relative; transition: transform 0.3s; }
-.media-item:hover .media-thumb svg { transform: scale(1.2); }
-.media-body { padding: 18px; }
-.media-body h4 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.media-body p { font-size: 12px; color: var(--text-muted); }
-
-/* Poll */
-.poll-options { margin-top: 16px; }
-.poll-option {
-  position: relative;
-  padding: 14px 16px;
-  margin-bottom: 8px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.25s;
-  background: var(--bg-elevated);
-  font-size: 14px;
-  overflow: hidden;
-}
-.poll-option:hover { border-color: var(--accent); }
-.poll-option.voted {
-  cursor: default;
-  border-color: var(--accent);
-}
-.poll-bar {
-  position: absolute;
-  inset: 0;
-  background: var(--gradient-soft);
-  width: 0%;
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 0;
-}
-.poll-label {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.poll-percent { font-weight: 700; color: var(--accent); }
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: var(--gradient);
-  color: white;
-  padding: 16px 24px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  font-weight: 500;
-  z-index: 1000;
-  transform: translateY(100px);
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.toast.show { transform: none; opacity: 1; }
-
-/* Back to top */
-.back-to-top {
-  position: fixed;
-  bottom: 30px;
-  left: 30px;
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: var(--gradient);
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: var(--shadow-lg);
-  font-size: 18px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(20px);
-  transition: all 0.3s;
-  z-index: 99;
-}
-.back-to-top.visible { opacity: 1; pointer-events: auto; transform: none; }
-.back-to-top:hover { transform: translateY(-4px); }
-
-/* Footer */
-.footer {
-  background: var(--bg-elevated);
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  text-align: center;
-  padding: 32px 24px;
-  font-size: 13px;
-  margin-top: 60px;
-}
-
-/* Impressum */
-.impressum-section { margin-bottom: 24px; }
-.impressum-section h3 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-.impressum-section p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
-
-/* ===== SPLIT HERO (image + teal text panel) ===== */
-.split-hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: #14b8a6;
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 60px;
-  box-shadow: var(--shadow-lg);
-  min-height: 420px;
-}
-[data-theme="dark"] .split-hero { background: #0d9488; }
-.split-hero-image {
-  background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80');
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-.split-hero-image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 70%, #14b8a6 100%);
-}
-[data-theme="dark"] .split-hero-image::after {
-  background: linear-gradient(90deg, transparent 70%, #0d9488 100%);
-}
-.split-hero-text {
-  padding: 60px 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  color: white;
-}
-.split-hero-text h1 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(28px, 3.5vw, 42px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin-bottom: 24px;
-}
-.split-hero-text p {
-  font-size: 16px;
-  opacity: 0.95;
-  margin-bottom: 28px;
-  max-width: 480px;
-}
-.btn-dark {
-  background: #0f172a;
-  color: white;
-  border: none;
-  padding: 14px 32px;
-  border-radius: 100px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.3s;
-  align-self: flex-start;
-}
-.btn-dark:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.25); background: #1e293b; }
-
-/* ===== FEATURE INTRO (Warum...) ===== */
-.feature-intro {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin: 60px 0 30px;
-  align-items: end;
-}
-.feature-intro h2 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(28px, 3.5vw, 44px);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-.feature-intro h2 .accent {
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.feature-intro p {
-  color: var(--text-muted);
-  font-size: 15px;
-  line-height: 1.7;
-}
-
-/* ===== IMAGE GALLERY (3 laptop screenshots) ===== */
-.image-gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 60px;
-}
-.gallery-item {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-.gallery-item img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.5s;
-}
-.gallery-item:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
-}
-.gallery-item:hover img { transform: scale(1.05); }
-.gallery-caption {
-  padding: 20px;
-}
-.gallery-caption h4 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-.gallery-caption p {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ===== VIDEO SECTION ===== */
-.video-section {
-  margin: 60px 0;
-  text-align: center;
-}
-.video-section h2 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(28px, 3.5vw, 40px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-}
-.video-section .video-subtitle {
-  color: var(--text-muted);
-  font-size: 16px;
-  margin-bottom: 32px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.video-wrapper {
-  position: relative;
-  max-width: 960px;
-  margin: 0 auto;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-}
-.video-wrapper::before {
-  content: '';
-  position: absolute;
-  top: -3px; left: -3px; right: -3px; bottom: -3px;
-  background: var(--gradient);
-  border-radius: 24px;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.video-wrapper:hover::before { opacity: 1; }
-.video-wrapper video {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 22px;
-}
-.video-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px);
-  color: white;
-  padding: 6px 14px;
-  border-radius: 100px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  z-index: 2;
-}
-.video-badge::before {
-  content: '';
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #ef4444;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* ===== BEITRÄGE (Featured highlights bar) ===== */
-.beitraege-section {
-  margin: 60px 0;
-}
-.beitraege-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.beitraege-header h2 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.beitraege-tabs {
-  display: flex;
-  gap: 6px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  padding: 5px;
-  border-radius: 100px;
-}
-.beitraege-tab {
-  background: transparent;
-  border: none;
-  padding: 8px 18px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-  cursor: pointer;
-  border-radius: 100px;
-  font-family: inherit;
-  transition: all 0.25s;
-}
-.beitraege-tab.active {
-  background: var(--gradient);
-  color: white;
-  box-shadow: 0 2px 10px var(--accent-glow);
-}
-
-/* ===== ANGEBOTE (split image + content) ===== */
-.angebote {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 40px;
-  margin-bottom: 60px;
-  overflow: hidden;
-}
-.angebote-image {
-  border-radius: var(--radius);
-  overflow: hidden;
-  height: 280px;
-}
-.angebote-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-.angebote:hover .angebote-image img { transform: scale(1.05); }
-.angebote h2 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 14px;
-  letter-spacing: -0.02em;
-}
-.angebote p {
-  color: var(--text-muted);
-  font-size: 15px;
-  line-height: 1.7;
-  margin-bottom: 22px;
-}
-
-/* ===== NEWSLETTER FORM ===== */
-.newsletter {
-  max-width: 560px;
-  margin: 60px auto;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 50px 40px;
-  text-align: center;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-}
-.newsletter::before {
-  content: '';
-  position: absolute;
-  top: -100px; right: -100px;
-  width: 250px; height: 250px;
-  background: var(--gradient);
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
-  z-index: 0;
-}
-.newsletter-tag {
-  display: inline-block;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.25em;
-  color: var(--accent);
-  margin-bottom: 14px;
-  position: relative;
-}
-.newsletter h2 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  position: relative;
-}
-.newsletter p {
-  color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 24px;
-  position: relative;
-}
-.newsletter-form {
-  position: relative;
-  z-index: 1;
-}
-.newsletter-form input {
-  width: 100%;
-  padding: 14px 18px;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  background: var(--bg);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 14px;
-  margin-bottom: 12px;
-  transition: all 0.25s;
-}
-.newsletter-form input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-glow);
-}
-.newsletter-form button {
-  width: 100%;
-}
-
-/* ===== FOOTER WITH COLUMNS ===== */
-.footer-rich {
-  background: var(--bg-elevated);
-  border-top: 1px solid var(--border);
-  padding: 50px 24px 30px;
-  margin-top: 80px;
-}
-.footer-cols {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 30px;
-}
-.footer-col h4 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 14px;
-  color: var(--text);
-}
-.footer-col a {
-  display: block;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 13px;
-  padding: 4px 0;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.footer-col a:hover { color: var(--accent); }
-.footer-col p {
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-.footer-bottom {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .menu-toggle { display: flex; align-items: center; justify-content: center; }
-  .nav-bar {
-    display: none;
-    flex-direction: column;
-    border-radius: var(--radius);
-    margin: 12px;
-    max-width: none;
-  }
-  .nav-bar.open { display: flex; }
-  .nav-bar button { width: 100%; text-align: left; }
-  .hero { padding: 50px 24px; }
-  .event-item { flex-direction: column; align-items: flex-start; }
-  .split-hero { grid-template-columns: 1fr; }
-  .split-hero-image { height: 240px; }
-  .split-hero-image::after { background: linear-gradient(180deg, transparent 70%, #14b8a6 100%); }
-  .split-hero-text { padding: 40px 28px; }
-  .feature-intro { grid-template-columns: 1fr; gap: 16px; }
-  .image-gallery { grid-template-columns: 1fr; }
-  .angebote { grid-template-columns: 1fr; padding: 24px; }
-  .footer-cols { grid-template-columns: 1fr 1fr; gap: 24px; }
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- Top bar -->
+<!-- ===== TOP BAR ===== -->
 <header class="top-bar">
   <div class="top-bar-inner">
     <div class="logo">
       <span class="logo-dot"></span>
+      Digitale Lernplattformen
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
       <button class="theme-toggle" id="themeToggle" aria-label="Theme wechseln">🌙</button>
@@ -1220,6 +27,7 @@ tbody tr:hover td { background: var(--gradient-soft); }
   </div>
   <nav class="nav-bar" id="navBar">
     <button data-page="home" class="active">Startseite</button>
+    <button data-page="poster">Chancen & Herausforderungen</button>
     <button data-page="tools">Plattformen</button>
     <button data-page="alltag">Studienalltag</button>
     <button data-page="events">Events</button>
@@ -1232,7 +40,6 @@ tbody tr:hover td { background: var(--gradient-soft); }
 <!-- ==================== STARTSEITE ==================== -->
 <div class="page active" id="page-home">
 
-  <!-- Split Hero -->
   <div class="split-hero reveal">
     <div class="split-hero-image"></div>
     <div class="split-hero-text">
@@ -1258,12 +65,13 @@ tbody tr:hover td { background: var(--gradient-soft); }
     </div>
   </div>
 
-  <!-- Feature Intro + Image Gallery -->
+  <!-- Feature Intro -->
   <div class="feature-intro reveal">
     <h2>Warum digitale Lernplattformen <span class="accent">entscheidend</span> sind</h2>
     <p>Digitale Lernplattformen prägen den modernen Studienalltag wie nie zuvor. Sie verbinden Flexibilität mit Effizienz und ermöglichen ortsunabhängiges, selbstgesteuertes Lernen – ein entscheidender Vorteil für Studierende von heute.</p>
   </div>
 
+  <!-- Image Gallery -->
   <div class="image-gallery">
     <div class="gallery-item reveal">
       <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80" alt="Lernplattform Dashboard">
@@ -1301,7 +109,7 @@ tbody tr:hover td { background: var(--gradient-soft); }
     </div>
   </div>
 
-  <!-- Beiträge / Highlights -->
+  <!-- Highlights -->
   <div class="beitraege-section reveal">
     <div class="beitraege-header">
       <h2>Highlights</h2>
@@ -1312,48 +120,20 @@ tbody tr:hover td { background: var(--gradient-soft); }
         <button class="beitraege-tab" data-filter="trends">Trends</button>
       </div>
     </div>
-
     <div class="grid" id="highlightsGrid">
-      <div class="card reveal" data-cat="chancen">
-        <h3>🌍 Flexibilität & Zugänglichkeit</h3>
-        <p>Lernen von überall und jederzeit – digitale Plattformen ermöglichen orts- und zeitunabhängiges Studieren.</p>
-      </div>
-      <div class="card reveal" data-cat="chancen">
-        <h3>🎯 Individuelles Lerntempo</h3>
-        <p>Studierende können Inhalte in ihrem eigenen Tempo bearbeiten und bei Bedarf wiederholen.</p>
-      </div>
-      <div class="card reveal" data-cat="chancen">
-        <h3>🤝 Kollaboration</h3>
-        <p>Digitale Tools fördern die Zusammenarbeit zwischen Studierenden über Grenzen hinweg.</p>
-      </div>
-      <div class="card reveal" data-cat="risiken">
-        <h3>⚠️ Technische Hürden</h3>
-        <p>Nicht alle Studierenden haben Zugang zu stabiler Internetverbindung oder geeigneter Hardware.</p>
-      </div>
-      <div class="card reveal" data-cat="risiken">
-        <h3>📱 Informationsüberflutung</h3>
-        <p>Die Vielzahl an Plattformen und Materialien kann überwältigend wirken.</p>
-      </div>
-      <div class="card reveal" data-cat="risiken">
-        <h3>🧠 Selbstdisziplin</h3>
-        <p>Eigenverantwortliches Lernen erfordert hohe Motivation und Zeitmanagement-Fähigkeiten.</p>
-      </div>
-      <div class="card reveal" data-cat="trends">
-        <h3>🤖 KI-gestützte Lernassistenten</h3>
-        <p>KI wird zunehmend in Lernplattformen integriert, um personalisierte Lernpfade zu erstellen.</p>
-      </div>
-      <div class="card reveal" data-cat="trends">
-        <h3>🔄 Hybride Lehrformate</h3>
-        <p>Universitäten kombinieren Präsenz- und Online-Lehre, um die Vorteile beider Welten zu vereinen.</p>
-      </div>
-      <div class="card reveal" data-cat="trends">
-        <h3>🎮 Micro-Learning & Gamification</h3>
-        <p>Kurze Lerneinheiten und spielerische Elemente steigern die Motivation nachhaltig.</p>
-      </div>
+      <div class="card reveal" data-cat="chancen"><h3>🌍 Flexibilität & Zugänglichkeit</h3><p>Lernen von überall und jederzeit – digitale Plattformen ermöglichen orts- und zeitunabhängiges Studieren.</p></div>
+      <div class="card reveal" data-cat="chancen"><h3>🎯 Individuelles Lerntempo</h3><p>Studierende können Inhalte in ihrem eigenen Tempo bearbeiten und bei Bedarf wiederholen.</p></div>
+      <div class="card reveal" data-cat="chancen"><h3>🤝 Kollaboration</h3><p>Digitale Tools fördern die Zusammenarbeit zwischen Studierenden über Grenzen hinweg.</p></div>
+      <div class="card reveal" data-cat="risiken"><h3>⚠️ Technische Hürden</h3><p>Nicht alle Studierenden haben Zugang zu stabiler Internetverbindung oder geeigneter Hardware.</p></div>
+      <div class="card reveal" data-cat="risiken"><h3>📱 Informationsüberflutung</h3><p>Die Vielzahl an Plattformen und Materialien kann überwältigend wirken.</p></div>
+      <div class="card reveal" data-cat="risiken"><h3>🧠 Selbstdisziplin</h3><p>Eigenverantwortliches Lernen erfordert hohe Motivation und Zeitmanagement-Fähigkeiten.</p></div>
+      <div class="card reveal" data-cat="trends"><h3>🤖 KI-gestützte Lernassistenten</h3><p>KI wird zunehmend in Lernplattformen integriert, um personalisierte Lernpfade zu erstellen.</p></div>
+      <div class="card reveal" data-cat="trends"><h3>🔄 Hybride Lehrformate</h3><p>Universitäten kombinieren Präsenz- und Online-Lehre, um die Vorteile beider Welten zu vereinen.</p></div>
+      <div class="card reveal" data-cat="trends"><h3>🎮 Micro-Learning & Gamification</h3><p>Kurze Lerneinheiten und spielerische Elemente steigern die Motivation nachhaltig.</p></div>
     </div>
   </div>
 
-  <!-- Angebote (Offerings) -->
+  <!-- Angebote -->
   <div class="angebote reveal">
     <div class="angebote-image">
       <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&q=80" alt="Digitales Lernen">
@@ -1367,7 +147,7 @@ tbody tr:hover td { background: var(--gradient-soft); }
 
   <!-- Newsletter -->
   <div class="newsletter reveal">
-    <span class="newsletter-tag">PROFIESFORM</span>
+    <span class="newsletter-tag">NEWSLETTER</span>
     <h2>Bleiben Sie informiert</h2>
     <p>Erhalten Sie regelmäßig Updates zu neuen Plattformen, Trends und Veranstaltungen rund um digitales Lernen.</p>
     <form class="newsletter-form" onsubmit="submitNewsletter(event)">
@@ -1376,8 +156,142 @@ tbody tr:hover td { background: var(--gradient-soft); }
       <button type="submit" class="btn">Jetzt anmelden</button>
     </form>
   </div>
-</div>
 
+</div><!-- end page-home -->
+
+
+<!-- ==================== CHANCEN & HERAUSFORDERUNGEN (POSTER) ==================== -->
+<div class="page" id="page-poster">
+
+  <h2 class="section-title">Chancen & Herausforderungen</h2>
+
+  <!-- POSTER IMAGE — displayed prominently -->
+  <div class="reveal" style="text-align: center; margin-bottom: 60px;">
+    <img
+      src="poster.jpg"
+      alt="Digitale Lernplattformen – Chancen und Herausforderungen Poster"
+      style="max-width: 100%; width: 700px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: 1px solid var(--border);"
+    >
+  </div>
+
+  <!-- DIGITAL VERSION of poster content below -->
+  <div class="poster-section">
+    <div class="poster-motto reveal">
+      <h2>Chancen und Herausforderungen</h2>
+      <div class="motto-sub">LERNEN. VERNETZEN. ZUKUNFT GESTALTEN.</div>
+    </div>
+
+    <div class="poster-grid">
+      <!-- CHANCEN -->
+      <div class="poster-col">
+        <div class="poster-col-header chancen reveal">✅ &nbsp; Chancen</div>
+
+        <div class="poster-item chance reveal">
+          <div class="poster-icon">🕐</div>
+          <div>
+            <h4>Flexibles Lernen</h4>
+            <p>Zeit- und ortsunabhängiger Zugang zu Lernmaterialien und Kursen.</p>
+          </div>
+        </div>
+
+        <div class="poster-item chance reveal">
+          <div class="poster-icon">💻</div>
+          <div>
+            <h4>Zugang zu Wissen</h4>
+            <p>Umfassende Materialien, Aufzeichnungen und digitale Bibliotheken jederzeit verfügbar.</p>
+          </div>
+        </div>
+
+        <div class="poster-item chance reveal">
+          <div class="poster-icon">🤝</div>
+          <div>
+            <h4>Bessere Vernetzung</h4>
+            <p>Austausch mit Kommiliton:innen und Lehrenden über Foren, Chats und Kollaborationstools.</p>
+          </div>
+        </div>
+
+        <div class="poster-item chance reveal">
+          <div class="poster-icon">📊</div>
+          <div>
+            <h4>Individuelles Lernen</h4>
+            <p>Anpassung an persönliche Lernbedürfnisse und -tempo durch vielfältige Formate.</p>
+          </div>
+        </div>
+
+        <div class="poster-item chance reveal">
+          <div class="poster-icon">🌱</div>
+          <div>
+            <h4>Nachhaltigkeit</h4>
+            <p>Weniger Papier, weniger Wege – ein Beitrag für Umwelt und Zukunft.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERAUSFORDERUNGEN -->
+      <div class="poster-col">
+        <div class="poster-col-header herausforderungen reveal">⚠️ &nbsp; Herausforderungen</div>
+
+        <div class="poster-item challenge reveal">
+          <div class="poster-icon">📶</div>
+          <div>
+            <h4>Digitale Kluft</h4>
+            <p>Nicht alle haben die gleiche technische Ausstattung oder stabile Internetverbindung.</p>
+          </div>
+        </div>
+
+        <div class="poster-item challenge reveal">
+          <div class="poster-icon">🔒</div>
+          <div>
+            <h4>Datenschutz & Sicherheit</h4>
+            <p>Umgang mit sensiblen Daten und mangelnde Transparenz bei Plattformen.</p>
+          </div>
+        </div>
+
+        <div class="poster-item challenge reveal">
+          <div class="poster-icon">🧠</div>
+          <div>
+            <h4>Selbstdisziplin & Motivation</h4>
+            <p>Ablenkungen und fehlende Strukturen können das Lernen erschweren.</p>
+          </div>
+        </div>
+
+        <div class="poster-item challenge reveal">
+          <div class="poster-icon">👁️</div>
+          <div>
+            <h4>Bildschirmmüdigkeit</h4>
+            <p>Lange Bildschirmzeiten belasten Konzentration, Gesundheit und Wohlbefinden.</p>
+          </div>
+        </div>
+
+        <div class="poster-item challenge reveal">
+          <div class="poster-icon">🔧</div>
+          <div>
+            <h4>Technische Hürden</h4>
+            <p>Fehler, Wartungen oder unklare Bedienung können den Lernfluss stören.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <div class="poster-quote reveal">
+      <p>Digitale Lernplattformen sind mehr als Tools – sie sind eine Chance, wenn wir sie gemeinsam gestalten.</p>
+    </div>
+
+    <!-- CTA Banner -->
+    <div class="poster-cta reveal">
+      <h3>Nutzen wir die Chancen. Meistern wir die Herausforderungen.</h3>
+      <div class="poster-cta-items">
+        <div class="poster-cta-item"><div class="cta-icon">🎓</div><span>Selbstbestimmt Lernen</span></div>
+        <div class="poster-cta-item"><div class="cta-icon">💬</div><span>Austausch Suchen</span></div>
+        <div class="poster-cta-item"><div class="cta-icon">🛠️</div><span>Tools Kompetent Nutzen</span></div>
+        <div class="poster-cta-item"><div class="cta-icon">⚖️</div><span>Digitale Balance Finden</span></div>
+        <div class="poster-cta-item"><div class="cta-icon">💡</div><span>Zukunft Mitgestalten</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page-poster -->
 
 
 <!-- ==================== PLATTFORMEN & TOOLS ==================== -->
@@ -1412,7 +326,8 @@ tbody tr:hover td { background: var(--gradient-soft); }
   <div class="card"><h3>ILIAS – Made in Germany</h3><p>ILIAS wurde an der Universität zu Köln entwickelt und ist besonders im deutschsprachigen Raum verbreitet. Vollständig DSGVO-konform.</p></div>
   <div class="card"><h3>Microsoft Teams – Kommunikation & Kollaboration</h3><p>Teams vereint Chat, Videokonferenzen, Dateiablage und Aufgabenverwaltung in einer Plattform.</p></div>
   <div class="card"><h3>Notion – Der digitale Workspace</h3><p>Notion kombiniert Notizen, Datenbanken, Kanban-Boards und Wikis in einem Tool.</p></div>
-</div>
+</div><!-- end page-tools -->
+
 
 <!-- ==================== STUDIENALLTAG ==================== -->
 <div class="page" id="page-alltag">
@@ -1426,7 +341,8 @@ tbody tr:hover td { background: var(--gradient-soft); }
   <div class="card reveal"><h3>🌊 Informationsüberflutung</h3><p>Wenn jeder Kurs eine andere Plattform nutzt, verlieren Studierende schnell den Überblick.</p></div>
   <div class="card reveal"><h3>😔 Soziale Isolation</h3><p>Rein digitales Studieren kann zu Vereinsamung führen. Der fehlende persönliche Kontakt ist eine der größten Herausforderungen.</p></div>
   <div class="card reveal"><h3>⏰ Zeitmanagement</h3><p>Die Flexibilität digitaler Angebote erfordert ein hohes Maß an Selbstorganisation.</p></div>
-</div>
+</div><!-- end page-alltag -->
+
 
 <!-- ==================== EVENTS ==================== -->
 <div class="page" id="page-events">
@@ -1457,19 +373,33 @@ tbody tr:hover td { background: var(--gradient-soft); }
     <div class="event-info"><h4>Austauschforum: Studierende treffen Lehrende</h4><p>16:00 – 17:30 Uhr · Online · Offene Diskussion</p></div>
     <button class="event-btn" onclick="registerEvent(this, 'Austauschforum')">Anmelden</button>
   </div>
-</div>
+</div><!-- end page-events -->
+
 
 <!-- ==================== MEDIEN ==================== -->
 <div class="page" id="page-medien">
   <h2 class="section-title">Medien & Ressourcen</h2>
 
-  <h3 style="margin: 20px 0 16px; font-family: 'Space Grotesk', sans-serif;">🎬 Videos & Tutorials</h3>
-  <div class="grid">
-    <div class="media-item"><div class="media-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="media-body"><h4>Einführung in Moodle</h4><p>Grundlagen in 10 Minuten erklärt</p></div></div>
-    <div class="media-item"><div class="media-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="media-body"><h4>Anki Masterclass</h4><p>Spaced Repetition optimal nutzen</p></div></div>
-    <div class="media-item"><div class="media-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="media-body"><h4>Notion für Studierende</h4><p>Studium organisieren mit Notion</p></div></div>
+  <!-- PODCAST SECTION -->
+  <h3 style="margin: 20px 0 16px; font-family: 'Space Grotesk', sans-serif;">🎙️ Podcast</h3>
+  <div class="card reveal" style="margin-bottom: 32px;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+      <div style="width: 56px; height: 56px; min-width: 56px; border-radius: 14px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 6px 20px var(--accent-glow);">🎙️</div>
+      <div>
+        <h3 style="margin-bottom: 4px;">Digitale Lernplattformen – Der Podcast</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Chancen und Herausforderungen für Studierende · Universität Klagenfurt</p>
+      </div>
+    </div>
+    <audio controls style="width: 100%; border-radius: 12px; accent-color: var(--accent);">
+      <source src="Podcast.mp3" type="audio/mpeg">
+      Ihr Browser unterstützt das Audio-Tag leider nicht.
+    </audio>
   </div>
 
+  <!-- VIDEOS -->
+
+
+  <!-- POLL -->
   <h3 style="margin: 32px 0 16px; font-family: 'Space Grotesk', sans-serif;">📊 Live-Umfrage</h3>
   <div class="card">
     <h3>Welche Plattform nutzen Sie am häufigsten?</h3>
@@ -1482,9 +412,10 @@ tbody tr:hover td { background: var(--gradient-soft); }
       <div class="poll-option" data-option="Anki" data-votes="63"><div class="poll-bar"></div><div class="poll-label"><span>Anki</span><span class="poll-percent"></span></div></div>
     </div>
   </div>
-
   <div class="card" style="margin-top: 20px;"><h3>🎮 Lernmodul: Digitale Kompetenz</h3><p>Testen Sie Ihr Wissen über digitale Lerntools in unserem interaktiven Selbstlernmodul mit sofortigem Feedback.</p></div>
-</div>
+
+</div><!-- end page-medien -->
+
 
 <!-- ==================== KONTAKT ==================== -->
 <div class="page" id="page-kontakt">
@@ -1496,31 +427,38 @@ tbody tr:hover td { background: var(--gradient-soft); }
       <div class="form-group"><label>Name</label><input type="text" required placeholder="Ihr vollständiger Name"></div>
       <div class="form-group"><label>E-Mail</label><input type="email" required placeholder="ihre.email@beispiel.de"></div>
       <div class="form-group"><label>Betreff</label>
-        <select><option>Allgemeine Frage</option><option>Feedback zur Website</option><option>Technisches Problem</option><option>Kooperationsanfrage</option><option>Sonstiges</option></select>
+        <select>
+          <option>Allgemeine Frage</option>
+          <option>Feedback zur Website</option>
+          <option>Technisches Problem</option>
+          <option>Kooperationsanfrage</option>
+          <option>Sonstiges</option>
+        </select>
       </div>
       <div class="form-group"><label>Nachricht</label><textarea required placeholder="Ihre Nachricht an uns..."></textarea></div>
       <button type="submit" class="btn">Nachricht senden ✉️</button>
     </form>
   </div>
   <div class="card" style="margin-top: 20px;"><h3>Über uns</h3><p>Diese Website ist ein studentisches Projekt zur Erforschung digitaler Lernplattformen im universitären Kontext.</p></div>
-</div>
+</div><!-- end page-kontakt -->
+
 
 <!-- ==================== IMPRESSUM ==================== -->
 <div class="page" id="page-impressum">
   <h2 class="section-title">Impressum</h2>
   <div class="card">
-    <div class="impressum-section"><h3>Angaben gemäß § 5 TMG</h3><p>Digitale Lernplattformen im Studium<br>Universitätsstraße 1<br>12345 Musterstadt<br>Deutschland</p></div>
-    <div class="impressum-section"><h3>Kontakt</h3><p>E-Mail: info@digitales-lernen.de<br>Telefon: +49 (0) 123 456789</p></div>
-    <div class="impressum-section"><h3>Verantwortlich für den Inhalt</h3><p>Projektleitung: [Name]<br>Universität Musterstadt<br>Fachbereich Medienwissenschaften</p></div>
-    <div class="impressum-section"><h3>Haftungsausschluss</h3><p>Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität können wir keine Gewähr übernehmen.</p></div>
-    <div class="impressum-section"><h3>Datenschutz</h3><p>Die Nutzung unserer Website ist in der Regel ohne Angabe personenbezogener Daten möglich, im Einklang mit der DSGVO.</p></div>
-    <div class="impressum-section"><h3>Urheberrecht</h3><p>Die Inhalte dieser Seiten unterliegen dem deutschen Urheberrecht. Vervielfältigung außerhalb des Urheberrechts bedarf schriftlicher Zustimmung.</p></div>
+    <div class="impressum-section"><h3>Angaben</h3><p>Digitale Lernplattformen im Studium<br>Digitale Kompetenzen<br>Universität Klagenfurt</p></div>
+    <div class="impressum-section"><h3>Kontakt</h3><p>Keine Kontaktangaben vorhanden.</p></div>
+    <div class="impressum-section"><h3>Verantwortlich für den Inhalt</h3><p>Projektleitung: Ivana Valio<br>Digitale Kompetenzen<br>Universität Klagenfurt</p></div>
+    <div class="impressum-section"><h3>Urheberrecht: Bild- und Videoquellen</h3><p>Einige auf dieser Website verwendete Bilder und Videos stammen von Pixabay und werden gemäß der Pixabay-Lizenz genutzt.</p></div>
   </div>
-</div>
+</div><!-- end page-impressum -->
+
 
 <button class="back-to-top" id="backToTop" aria-label="Nach oben">↑</button>
 <div class="toast" id="toast"></div>
 
+<!-- ===== FOOTER ===== -->
 <footer class="footer-rich">
   <div class="footer-cols">
     <div class="footer-col">
@@ -1530,6 +468,7 @@ tbody tr:hover td { background: var(--gradient-soft); }
     <div class="footer-col">
       <h4>Navigation</h4>
       <a onclick="navigateTo('home')">Startseite</a>
+      <a onclick="navigateTo('poster')">Chancen & Herausforderungen</a>
       <a onclick="navigateTo('tools')">Plattformen</a>
       <a onclick="navigateTo('alltag')">Studienalltag</a>
       <a onclick="navigateTo('events')">Events</a>
@@ -1550,218 +489,6 @@ tbody tr:hover td { background: var(--gradient-soft); }
   </div>
 </footer>
 
-<script>
-// ============ THEME TOGGLE ============
-const themeToggle = document.getElementById('themeToggle');
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-themeToggle.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
-});
-
-// ============ NAVIGATION ============
-const navButtons = document.querySelectorAll('.nav-bar button');
-const pages = document.querySelectorAll('.page');
-
-function navigateTo(pageId) {
-  pages.forEach(p => p.classList.remove('active'));
-  navButtons.forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + pageId).classList.add('active');
-  document.querySelector(`.nav-bar button[data-page="${pageId}"]`).classList.add('active');
-  document.getElementById('navBar').classList.remove('open');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  // Re-trigger reveals on new page
-  setTimeout(initReveals, 50);
-  // Re-trigger counters on home
-  if (pageId === 'home') setTimeout(animateCounters, 200);
-}
-
-navButtons.forEach(btn => {
-  btn.addEventListener('click', () => navigateTo(btn.dataset.page));
-});
-
-// ============ MOBILE MENU ============
-document.getElementById('menuToggle').addEventListener('click', () => {
-  document.getElementById('navBar').classList.toggle('open');
-});
-
-// ============ SCROLL PROGRESS ============
-window.addEventListener('scroll', () => {
-  const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-  document.getElementById('scrollProgress').style.width = scrolled + '%';
-  document.getElementById('backToTop').classList.toggle('visible', window.scrollY > 400);
-});
-
-// ============ BACK TO TOP ============
-document.getElementById('backToTop').addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// ============ REVEAL ON SCROLL ============
-function initReveals() {
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 60);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => {
-    el.classList.remove('visible');
-    observer.observe(el);
-  });
-}
-initReveals();
-
-// ============ ANIMATED COUNTERS ============
-function animateCounters() {
-  document.querySelectorAll('[data-count]').forEach(el => {
-    const target = parseFloat(el.dataset.count);
-    const suffix = el.dataset.suffix || '';
-    const duration = 1500;
-    const steps = 60;
-    const stepValue = target / steps;
-    let current = 0;
-    const interval = setInterval(() => {
-      current += stepValue;
-      if (current >= target) {
-        current = target;
-        clearInterval(interval);
-      }
-      const display = target % 1 === 0 ? Math.floor(current) : current.toFixed(1);
-      el.textContent = display + suffix;
-    }, duration / steps);
-  });
-}
-setTimeout(animateCounters, 400);
-
-// ============ TABLE SORTING ============
-const table = document.getElementById('toolsTable');
-const headers = table.querySelectorAll('th');
-let sortDir = {};
-
-headers.forEach(th => {
-  th.addEventListener('click', () => {
-    const col = parseInt(th.dataset.col);
-    const tbody = table.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    const asc = sortDir[col] !== 'asc';
-    sortDir = {};
-    sortDir[col] = asc ? 'asc' : 'desc';
-    rows.sort((a, b) => {
-      const aText = a.children[col].textContent.trim();
-      const bText = b.children[col].textContent.trim();
-      return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
-    });
-    rows.forEach(r => tbody.appendChild(r));
-    headers.forEach(h => h.classList.remove('sorted', 'sorted-asc'));
-    th.classList.add(asc ? 'sorted-asc' : 'sorted');
-  });
-});
-
-// ============ EVENT REGISTRATION ============
-function registerEvent(btn, eventName) {
-  btn.textContent = '✓ Angemeldet';
-  btn.style.background = 'var(--gradient)';
-  btn.style.color = 'white';
-  btn.disabled = true;
-  showToast(`Erfolgreich angemeldet zu: ${eventName}`);
-}
-
-// ============ POLL ============
-const pollOptions = document.querySelectorAll('.poll-option');
-let hasVoted = localStorage.getItem('hasVoted') === 'true';
-
-function renderPoll() {
-  let total = 0;
-  pollOptions.forEach(opt => total += parseInt(opt.dataset.votes));
-  pollOptions.forEach(opt => {
-    const votes = parseInt(opt.dataset.votes);
-    const percent = Math.round((votes / total) * 100);
-    if (hasVoted) {
-      opt.classList.add('voted');
-      opt.querySelector('.poll-bar').style.width = percent + '%';
-      opt.querySelector('.poll-percent').textContent = percent + '%';
-    }
-  });
-}
-
-pollOptions.forEach(opt => {
-  opt.addEventListener('click', () => {
-    if (hasVoted) return;
-    opt.dataset.votes = parseInt(opt.dataset.votes) + 1;
-    hasVoted = true;
-    localStorage.setItem('hasVoted', 'true');
-    renderPoll();
-    showToast('Danke für Ihre Stimme! 🎉');
-  });
-});
-renderPoll();
-
-// ============ CONTACT FORM ============
-function submitForm(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.textContent = 'Wird gesendet...';
-  btn.disabled = true;
-  setTimeout(() => {
-    showToast('✓ Nachricht erfolgreich gesendet!');
-    e.target.reset();
-    btn.textContent = 'Nachricht senden ✉️';
-    btn.disabled = false;
-  }, 1000);
-}
-
-// ============ TOAST NOTIFICATIONS ============
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// ============ HIGHLIGHTS FILTER TABS ============
-document.querySelectorAll('.beitraege-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.beitraege-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const filter = tab.dataset.filter;
-    document.querySelectorAll('#highlightsGrid .card').forEach(card => {
-      const show = filter === 'all' || card.dataset.cat === filter;
-      card.style.display = show ? '' : 'none';
-    });
-  });
-});
-
-// ============ NEWSLETTER ============
-function submitNewsletter(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.textContent = 'Wird gesendet...';
-  btn.disabled = true;
-  setTimeout(() => {
-    showToast('✓ Erfolgreich für den Newsletter angemeldet!');
-    e.target.reset();
-    btn.textContent = 'Jetzt anmelden';
-    btn.disabled = false;
-  }, 800);
-}
-
-// ============ KEYBOARD NAVIGATION ============
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.getElementById('navBar').classList.remove('open');
-  }
-});
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
